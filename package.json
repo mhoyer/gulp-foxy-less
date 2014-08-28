@@ -26,6 +26,8 @@
   "homepage": "https://github.com/mhoyer/gulp-foxy-less",
   "devDependencies": {
     "chai": "^1.9.1",
+    "gulp": "^3.8.7",
+    "gulp-mocha": "^1.0.0",
     "jshint": "^2.5.5",
     "mocha": "^1.21.4"
   }
