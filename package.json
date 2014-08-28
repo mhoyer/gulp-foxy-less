@@ -1,0 +1,32 @@
+{
+  "name": "gulp-foxy-less",
+  "version": "0.0.0",
+  "description": "Dependency driven stream extender for gulp-less tasks.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jshint && mocha --reporter spec -t 5000 -s 2000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mhoyer/gulp-foxy-less.git"
+  },
+  "keywords": [
+    "gulp",
+    "less",
+    "watcher",
+    "import",
+    "dependencies",
+    "filter"
+  ],
+  "author": "Marcel Hoyer",
+  "license": "MIT License",
+  "bugs": {
+    "url": "https://github.com/mhoyer/gulp-foxy-less/issues"
+  },
+  "homepage": "https://github.com/mhoyer/gulp-foxy-less",
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "jshint": "^2.5.5",
+    "mocha": "^1.21.4"
+  }
+}
