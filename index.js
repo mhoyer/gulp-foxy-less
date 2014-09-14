@@ -6,12 +6,13 @@ var gutil = require('gulp-util');
 var path = require('path');
 var vinyl = require('vinyl');
 
-module.exports = function() {
+module.exports = function(opts) {
+  var opts = opts || { debug: false }; // no need yet
   var lessDependencies = {};
   var lessDependenciesInverted = {};
 
   function updateDependencies(file) {
-    gutil.log('Updating import dependencies for:', gutil.colors.cyan(file.path));
+    opts.debug && gutil.log('Updating import dependencies for:', gutil.colors.cyan(file.path));
 
     var filePath = path.normalize(file.path);
 
@@ -43,7 +44,7 @@ module.exports = function() {
       lessDependenciesInverted[sourceFile].forEach(function(dep) {
         if(pushed.indexOf(dep) >= 0) return;
 
-        gutil.log('Pushing dependent file to stream:', gutil.colors.cyan(dep));
+        opts.debug && gutil.log('Pushing dependent file to stream:', gutil.colors.cyan(dep));
 
         stream.push(new vinyl({path: dep}));
         pushed.push(dep);
