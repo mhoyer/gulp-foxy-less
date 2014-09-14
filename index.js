@@ -2,18 +2,25 @@
 
 var through = require('through2');
 var fs = require('fs');
+var glob = require("glob");
 var gutil = require('gulp-util');
 var path = require('path');
 var vinyl = require('vinyl');
 var util = require('util');
 
 module.exports = function(opts) {
-  var defaultOpts = { debug: false };
+  var defaultOpts = { debug: false, readOnInit: null };
   var opts = opts || defaultOpts; // no need yet
   opts = util._extend(defaultOpts, opts);
 
   var lessDependencies = {};
   var lessDependenciesInverted = {};
+
+  if(opts.readOnInit !== null) {
+    glob.sync(opts.readOnInit).forEach(function(data) {
+      updateDependencies({path: data});
+    });
+  }
 
   function updateDependencies(file) {
     opts.debug && gutil.log('Updating import dependencies for:', gutil.colors.cyan(file.path));

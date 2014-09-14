@@ -7,7 +7,7 @@ var should = require('chai').should(),
     sinon = require('sinon'),
     gulpAutolessFilter = require('..');
 
-describe('Running gulp-autoless-filter task', function(){
+describe('Running gulp-autoless-filter task with disabled read-on-init', function(){
   var sut, buffer;
 
   beforeEach(function() {
@@ -237,6 +237,139 @@ describe('Running gulp-autoless-filter task', function(){
         buffer[2].should.equal(fileFixture[0]);
         buffer[3].path.should.equal(fileFixture[2].path);
         buffer[4].path.should.equal(fileFixture[3].path);
+        done();
+      });
+      sut.end();
+    });
+  });
+});
+
+describe('Running gulp-autoless-filter task with enabled read-on-init', function(){
+  var sut, buffer;
+
+  beforeEach(function() {
+    buffer = [];
+
+    sut = gulpAutolessFilter({readOnInit: __dirname+'/fixtures/*.less'});
+    sut.on('data', function(data){ 
+      buffer.push(data);
+    });
+  });
+
+  describe('with simple A <- B dependent .less files', function() {
+    // B.less imports A.less
+    var fileFixture = [
+      {path: path.normalize(__dirname+'/fixtures/simple-A.less')},
+      {path: path.normalize(__dirname+'/fixtures/simple-B.less')}
+    ];
+
+    it('should map from input sequence A to A-B', function(done) {
+      // act
+      sut.write(fileFixture[0]);
+
+      // assert 
+      sut.on('end', function() {
+        buffer.length.should.equal(2);
+        buffer[0].path.should.equal(fileFixture[0].path);
+        buffer[1].path.should.equal(fileFixture[1].path);
+        done();
+      });
+      sut.end();
+    });
+
+    it('should map from input sequence B to B', function(done) {
+      // act
+      sut.write(fileFixture[1]);
+
+      // assert 
+      sut.on('end', function() {
+        buffer.length.should.equal(1);
+        buffer[0].should.equal(fileFixture[1]);
+        done();
+      });
+      sut.end();
+    });
+
+    it('should map from input sequence A-B to A-B-B', function(done) {
+      // act
+      sut.write(fileFixture[0]);
+      sut.write(fileFixture[1]);
+
+      // assert 
+      sut.on('end', function() {
+        buffer.length.should.equal(3);
+        buffer[0].should.equal(fileFixture[0]);
+        buffer[1].path.should.equal(fileFixture[1].path);
+        buffer[2].path.should.equal(fileFixture[1].path);
+        done();
+      });
+      sut.end();
+    });
+
+    it('should map from input sequence B-A to B-A-B', function(done) {
+      // act
+      sut.write(fileFixture[1]);
+      sut.write(fileFixture[0]);
+
+      // assert 
+      sut.on('end', function() {
+        buffer.length.should.equal(3);
+        buffer[0].should.equal(fileFixture[1]);
+        buffer[1].should.equal(fileFixture[0]);
+        buffer[2].path.should.equal(fileFixture[1].path);
+        done();
+      });
+      sut.end();
+    });
+  });
+
+  describe('with complex scenario: (A <- B <- C <- D) and (A <- D)', function() {
+    // A <- B <- C <─┐
+    // ^             D
+    // └─────────────┘
+    var fileFixture = [
+      {path: path.normalize(__dirname+'/fixtures/complex-A.less')},
+      {path: path.normalize(__dirname+'/fixtures/complex-B.less')},
+      {path: path.normalize(__dirname+'/fixtures/complex-C.less')},
+      {path: path.normalize(__dirname+'/fixtures/complex-D.less')}
+    ];
+
+    it('should map from input sequence A to A-B-C-D', function(done) {
+      // act
+      sut.write(fileFixture[0]);
+
+      // assert 
+      sut.on('end', function() {
+        buffer.length.should.equal(4);
+        buffer[0].path.should.equal(fileFixture[0].path);
+        buffer[1].path.should.equal(fileFixture[1].path);
+        buffer[2].path.should.equal(fileFixture[2].path);
+        buffer[3].path.should.equal(fileFixture[3].path);
+        done();
+      });
+      sut.end();
+    });
+
+    it('should map from input sequence D-C-B-A to D-(C-D)-(B-C-D)-(A-B-C-D)', function(done) {
+      // act
+      sut.write(fileFixture[3]);
+      sut.write(fileFixture[2]);
+      sut.write(fileFixture[1]);
+      sut.write(fileFixture[0]);
+
+      // assert 
+      sut.on('end', function() {
+        buffer.length.should.equal(10);
+        buffer[0].path.should.equal(fileFixture[3].path);
+        buffer[1].path.should.equal(fileFixture[2].path);
+        buffer[2].path.should.equal(fileFixture[3].path);
+        buffer[3].path.should.equal(fileFixture[1].path);
+        buffer[4].path.should.equal(fileFixture[2].path);
+        buffer[5].path.should.equal(fileFixture[3].path);
+        buffer[6].path.should.equal(fileFixture[0].path);
+        buffer[7].path.should.equal(fileFixture[1].path);
+        buffer[8].path.should.equal(fileFixture[2].path);
+        buffer[9].path.should.equal(fileFixture[3].path);
         done();
       });
       sut.end();
