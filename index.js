@@ -5,9 +5,13 @@ var fs = require('fs');
 var gutil = require('gulp-util');
 var path = require('path');
 var vinyl = require('vinyl');
+var util = require('util');
 
 module.exports = function(opts) {
-  var opts = opts || { debug: false }; // no need yet
+  var defaultOpts = { debug: false };
+  var opts = opts || defaultOpts; // no need yet
+  opts = util._extend(defaultOpts, opts);
+
   var lessDependencies = {};
   var lessDependenciesInverted = {};
 
