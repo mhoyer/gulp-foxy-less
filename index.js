@@ -24,9 +24,8 @@ module.exports = function(opts) {
   }
 
   function updateDependencies(file) {
-    opts.debug && gutil.log('Updating import dependencies for:', gutil.colors.cyan(file.path));
-
     var filePath = path.resolve(process.cwd(), file.path);
+    opts.debug && gutil.log('Updating import dependencies for:', gutil.colors.cyan(filePath));
 
     var data = fs.readFileSync(filePath, 'utf8');
     var importRegex = /@import\s+["']([^"']*)["'];/g;
