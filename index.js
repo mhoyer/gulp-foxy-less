@@ -58,7 +58,7 @@ module.exports = function(opts) {
 
         opts.debug && gutil.log('Pushing dependent file to stream:', gutil.colors.cyan(dep));
 
-        stream.push(new vinyl({path: dep}));
+        stream.push(new vinyl({path: dep, contents: fs.readFileSync(dep)}));
         pushed.push(dep);
 
         pushDependentFilesToStream(dep, stream, pushed);
