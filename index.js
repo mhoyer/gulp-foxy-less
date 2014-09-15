@@ -8,15 +8,16 @@ var path = require('path');
 var vinyl = require('vinyl');
 var util = require('util');
 
+var lessDependencies = {};
+var lessDependenciesInverted = {};
+
 module.exports = function(opts) {
   var defaultOpts = { debug: false, readOnInit: null };
   var opts = opts || defaultOpts; // no need yet
   opts = util._extend(defaultOpts, opts);
 
-  var lessDependencies = {};
-  var lessDependenciesInverted = {};
 
-  if(opts.readOnInit !== null) {
+  if(opts.readOnInit !== null && Object.keys(lessDependencies).length == 0) {
     glob.sync(opts.readOnInit).forEach(function(data) {
       updateDependencies({path: data});
     });
