@@ -12,10 +12,9 @@ var lessDependencies = {};
 var lessDependenciesInverted = {};
 
 module.exports = function(opts) {
-  var defaultOpts = { debug: false, readOnInit: null };
+  var defaultOpts = { verbose: false, readOnInit: null };
   var opts = opts || defaultOpts; // no need yet
   opts = util._extend(defaultOpts, opts);
-
 
   if(opts.readOnInit !== null && Object.keys(lessDependencies).length == 0) {
     glob.sync(opts.readOnInit).forEach(function(data) {
@@ -23,9 +22,14 @@ module.exports = function(opts) {
     });
   }
 
+  function fileActionLog(action, filePath) {
+    if (!opts.verbose) return;
+    gutil.log(gutil.colors.cyan('gulp-foxy-less:'), action, gutil.colors.magenta(filePath));
+  }
+
   function updateDependencies(file) {
     var filePath = path.resolve(process.cwd(), file.path);
-    opts.debug && gutil.log('Updating import dependencies for:', gutil.colors.cyan(filePath));
+    fileActionLog('Updating import dependencies for ', filePath);
 
     var data = fs.readFileSync(filePath, 'utf8');
     var importRegex = /@import\s+["']([^"']*)["'];/g;
@@ -56,7 +60,7 @@ module.exports = function(opts) {
       lessDependenciesInverted[filePath].forEach(function(depFilePath) {
         if(pushed.indexOf(depFilePath) >= 0) return;
 
-        opts.debug && gutil.log('Pushing dependent file to stream:', gutil.colors.cyan(depFilePath));
+        fileActionLog('Pushing dependent file to stream ', depFilePath);
 
         var depFile = file.clone();
         depFile.path = depFilePath;
