@@ -48,19 +48,24 @@ module.exports = function(opts) {
     lessDependencies[filePath] = matches;
   }
 
-  var pushDependentFilesToStream = function(sourceFile, stream, pushed) {
-    pushed = pushed || [sourceFile];
+  var pushDependentFilesToStream = function(file, stream, pushed) {
+    var filePath = path.resolve(process.cwd(), file.path);
+    pushed = pushed || [filePath];
 
-    if(sourceFile in lessDependenciesInverted) {
-      lessDependenciesInverted[sourceFile].forEach(function(dep) {
-        if(pushed.indexOf(dep) >= 0) return;
+    if(filePath in lessDependenciesInverted) {
+      lessDependenciesInverted[filePath].forEach(function(depFilePath) {
+        if(pushed.indexOf(depFilePath) >= 0) return;
 
-        opts.debug && gutil.log('Pushing dependent file to stream:', gutil.colors.cyan(dep));
+        opts.debug && gutil.log('Pushing dependent file to stream:', gutil.colors.cyan(depFilePath));
 
-        stream.push(new vinyl({path: dep, contents: fs.readFileSync(dep)}));
-        pushed.push(dep);
+        var depFile = file.clone();
+        depFile.path = depFilePath;
+        depFile.contents = file.isStream() ? fs.createReadStream(depFilePath) : fs.readFileSync(depFilePath);
 
-        pushDependentFilesToStream(dep, stream, pushed);
+        pushed.push(depFilePath);
+        stream.push(depFile);
+
+        pushDependentFilesToStream(depFile, stream, pushed);
       });
     }
   };
@@ -71,7 +76,7 @@ module.exports = function(opts) {
     this.push(file);
 
     if(filePath in lessDependencies) {
-      pushDependentFilesToStream(filePath, this);
+      pushDependentFilesToStream(file, this);
     } else {
       updateDependencies(file);
     }
