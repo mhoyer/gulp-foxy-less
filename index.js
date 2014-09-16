@@ -88,5 +88,5 @@ module.exports = function(opts) {
     cb();
   };
 
-  return through.obj(transform);
+  return function() { return through.obj(transform); }
 }

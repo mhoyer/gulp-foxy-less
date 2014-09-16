@@ -36,7 +36,7 @@ var lessFiles = 'app/**/*.less';
 
 gulp.task('less', function() {
 	gulp.src(lessFiles)
-    .pipe(foxy)
+    .pipe(foxy())
     .pipe(less())
     .pipe(gulp.dest('app/'));
 });
@@ -44,7 +44,7 @@ gulp.task('less', function() {
 gulp.task('watch-less', function() {
   watch(lessFiles, function(files) {
     files
-      .pipe(foxy)
+      .pipe(foxy())
       .pipe(less())
       .pipe(gulp.dest('app/'));
   });
@@ -68,7 +68,7 @@ gulp.task('watch-less', function() {
 
   watch(lessFiles, function(files) {
     files
-      .pipe(foxy)
+      .pipe(foxy())
       .pipe(less())
       .pipe(gulp.dest('app/'));
   });
