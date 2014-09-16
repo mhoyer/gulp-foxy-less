@@ -1,17 +1,7 @@
 'use strict';
 
-var should = require('chai').should(),
-    through = require('through2'),
-    fs = require('fs'),
-    vinyl = require('vinyl'),
-    path = require('path'),
-    sinon = require('sinon');
-
-function createFixture(fileName) {
-  return new vinyl({
-    path: path.resolve(__dirname+'/fixtures/'+fileName)
-  });
-}
+var should = require('chai').should();
+var specHelper = require('./spec-helper');
 
 describe('Running gulp-foxy-less task with disabled read-on-init', function(){
   var sut, buffer;
@@ -29,7 +19,7 @@ describe('Running gulp-foxy-less task with disabled read-on-init', function(){
   afterEach(function() {  });
 
   describe('with simple standalone .less file', function() {
-    var fileFixture = createFixture('standalone.less');
+    var fileFixture = specHelper.createFixture('standalone.less');
 
     it('should pass when pushed once to input stream', function(done) {
       // act
@@ -62,10 +52,7 @@ describe('Running gulp-foxy-less task with disabled read-on-init', function(){
 
   describe('with simple A <- B dependent .less files', function() {
     // B.less imports A.less
-    var fileFixture = [
-      createFixture('simple-A.less'),
-      createFixture('simple-B.less')
-    ];
+    var fileFixture = ['simple-A.less', 'simple-B.less'].map(specHelper.createFixture);
 
     it('should map from input sequence A-B to A-B', function(done) {
       // act
@@ -137,12 +124,7 @@ describe('Running gulp-foxy-less task with disabled read-on-init', function(){
     // A <- B <- C <─┐
     // ^             D
     // └─────────────┘
-    var fileFixture = [
-      createFixture('complex-A.less'),
-      createFixture('complex-B.less'),
-      createFixture('complex-C.less'),
-      createFixture('complex-D.less')
-    ];
+    var fileFixture = ['complex-A.less', 'complex-B.less', 'complex-C.less', 'complex-D.less'].map(specHelper.createFixture);
 
     it('should map from input sequence A-B-C-D to A-B-C-D', function(done) {
       // act
@@ -266,10 +248,7 @@ describe('Running gulp-foxy-less task with enabled read-on-init', function(){
 
   describe('with simple A <- B dependent .less files', function() {
     // B.less imports A.less
-    var fileFixture = [
-      createFixture('simple-A.less'),
-      createFixture('simple-B.less')
-    ];
+    var fileFixture = ['simple-A.less', 'simple-B.less'].map(specHelper.createFixture);
 
     it('should map from input sequence A to A-B', function(done) {
       // act
@@ -335,12 +314,7 @@ describe('Running gulp-foxy-less task with enabled read-on-init', function(){
     // A <- B <- C <─┐
     // ^             D
     // └─────────────┘
-    var fileFixture = [
-      createFixture('complex-A.less'),
-      createFixture('complex-B.less'),
-      createFixture('complex-C.less'),
-      createFixture('complex-D.less')
-    ];
+    var fileFixture = ['complex-A.less', 'complex-B.less', 'complex-C.less', 'complex-D.less'].map(specHelper.createFixture);
 
     it('should map from input sequence A to A-B-C-D', function(done) {
       // act
