@@ -2,7 +2,7 @@
 
 var through = require('through2');
 var fs = require('fs');
-var glob = require("glob");
+var glob = require('glob');
 var gutil = require('gulp-util');
 var path = require('path');
 var vinyl = require('vinyl');
@@ -13,7 +13,7 @@ var lessDependenciesInverted = {};
 
 module.exports = function(opts) {
   var defaultOpts = { verbose: false, readOnInit: null };
-  var opts = opts || defaultOpts; // no need yet
+  var opts = opts || defaultOpts;
   opts = util._extend(defaultOpts, opts);
 
   if(opts.readOnInit !== null && Object.keys(lessDependencies).length == 0) {
@@ -24,12 +24,12 @@ module.exports = function(opts) {
 
   function fileActionLog(action, filePath) {
     if (!opts.verbose) return;
-    gutil.log(gutil.colors.cyan('gulp-foxy-less:'), action, gutil.colors.magenta(filePath));
+    gutil.log(gutil.colors.cyan('gulp-foxy-less'), action, gutil.colors.magenta(filePath));
   }
 
   function updateDependencies(file) {
     var filePath = path.resolve(process.cwd(), file.path);
-    fileActionLog('Updating import dependencies for ', filePath);
+    fileActionLog('Updating import dependencies for', filePath);
 
     var data = fs.readFileSync(filePath, 'utf8');
     var importRegex = /@import\s+["']([^"']*)["'];/g;
@@ -52,7 +52,7 @@ module.exports = function(opts) {
     lessDependencies[filePath] = matches;
   }
 
-  var pushDependentFilesToStream = function(file, stream, pushed) {
+  function pushDependentFilesToStream (file, stream, pushed) {
     var filePath = path.resolve(process.cwd(), file.path);
     pushed = pushed || [filePath];
 
@@ -60,7 +60,7 @@ module.exports = function(opts) {
       lessDependenciesInverted[filePath].forEach(function(depFilePath) {
         if(pushed.indexOf(depFilePath) >= 0) return;
 
-        fileActionLog('Pushing dependent file to stream ', depFilePath);
+        fileActionLog('Pushing dependent file to stream', depFilePath);
 
         var depFile = file.clone();
         depFile.path = depFilePath;
@@ -74,7 +74,7 @@ module.exports = function(opts) {
     }
   };
 
-  var transformFn = function (file, enc, cb) {
+  function transform(file, enc, cb) {
     var filePath = path.resolve(process.cwd(), file.path);
 
     this.push(file);
@@ -88,5 +88,5 @@ module.exports = function(opts) {
     cb();
   };
 
-  return through.obj(transformFn);
+  return through.obj(transform);
 }
