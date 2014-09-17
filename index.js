@@ -11,15 +11,20 @@ var util = require('util');
 var lessDependencies = {};
 var lessDependenciesInverted = {};
 
-module.exports = function(opts) {
+module.exports = function(opts, done) {
   var defaultOpts = { verbose: false, readOnInit: null };
   var opts = opts || defaultOpts;
   opts = util._extend(defaultOpts, opts);
 
   if(opts.readOnInit !== null && Object.keys(lessDependencies).length == 0) {
-    glob.sync(opts.readOnInit).forEach(function(data) {
-      updateDependencies({path: data});
+    glob(opts.readOnInit, function(err, matches) {
+      matches.forEach(function(filePath) { 
+        updateDependencies({path: filePath}) 
+      });
+      if (typeof done === 'function') done();
     });
+  } else {
+    if (typeof done === 'function') done();
   }
 
   function fileActionLog(action, filePath) {

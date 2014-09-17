@@ -236,11 +236,11 @@ describe('Running gulp-foxy-less task with disabled read-on-init', function(){
 describe('Running gulp-foxy-less task with enabled read-on-init', function(){
   var sut, buffer;
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     buffer = [];
 
     delete require.cache[require.resolve('..')];
-    sut = require('..')({readOnInit: __dirname+'/fixtures/*.less'})();
+    sut = require('..')({readOnInit: __dirname+'/fixtures/*.less'}, done)();
     sut.on('data', function(data){ 
       buffer.push(data);
     });
