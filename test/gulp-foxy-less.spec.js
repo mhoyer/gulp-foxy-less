@@ -358,3 +358,34 @@ describe('Running gulp-foxy-less task with enabled read-on-init', function(){
     });
   });
 });
+
+describe('Creating gulp-foxy-less pipe with read-on-init given an array of globs', function(){
+  var sut, buffer;
+
+  beforeEach(function(done) {
+    buffer = [];
+
+    delete require.cache[require.resolve('..')];
+    sut = require('..')({readOnInit: [__dirname+'/fixtures/*.less']}, done)();
+    sut.on('data', function(data){ 
+      buffer.push(data);
+    });
+  });
+
+  describe('with simple standalone .less file', function() {
+    var fileFixture = specHelper.createFixture('standalone.less');
+
+    it('should pass when pushed once to input stream', function(done) {
+      // act
+      sut.write(fileFixture);
+
+      // assert 
+      sut.on('end', function() {
+        buffer.length.should.equal(1);
+        buffer[0].should.equal(fileFixture);
+        done();
+      });
+      sut.end();
+    });
+  });
+});

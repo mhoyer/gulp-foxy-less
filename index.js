@@ -2,7 +2,7 @@
 
 var through = require('through2');
 var fs = require('fs');
-var glob = require('glob');
+var glob = require('glob-all');
 var gutil = require('gulp-util');
 var path = require('path');
 var vinyl = require('vinyl');
