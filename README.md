@@ -32,7 +32,7 @@ var less = require('gulp-less');
 var foxy = require('gulp-foxy-less');
 
 var foxy = foxyLess();
-var lessFiles = 'app/**/*.less';
+var lessFiles = ['app/**/*.less'];
 
 gulp.task('less', function() {
 	gulp.src(lessFiles)
@@ -63,7 +63,7 @@ var less = require('gulp-less');
 var foxyLess = require('gulp-foxy-less');
 
 gulp.task('watch-less', function() {
-  var lessFiles = 'app/**/*.less';
+  var lessFiles = ['app/**/*.less'];
   var foxy = foxyLess({readOnInit: lessFiles, verbose: false});
 
   watch(lessFiles, function(files) {
@@ -82,7 +82,7 @@ gulp.task('watch-less', function() {
 #### opts
 ##### opts.readOnInit
 
-Type: `String`
+Type: `String` or `Array`
 Default: `null`
 
 Usually helpful when only using a plain watch task without 
