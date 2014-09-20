@@ -8,24 +8,11 @@ var path = require('path');
 var vinyl = require('vinyl');
 var util = require('util');
 
-var lessDependencies = {};
-var lessDependenciesInverted = {};
-
-module.exports = function(opts, done) {
+function FoxyLess(opts) {
   var defaultOpts = { verbose: false, readOnInit: null };
-  var opts = opts || defaultOpts;
-  opts = util._extend(defaultOpts, opts);
-
-  if(opts.readOnInit !== null && Object.keys(lessDependencies).length == 0) {
-    glob(opts.readOnInit, function(err, matches) {
-      matches.forEach(function(filePath) { 
-        updateDependencies({path: filePath}) 
-      });
-      if (typeof done === 'function') done();
-    });
-  } else {
-    if (typeof done === 'function') done();
-  }
+  var opts = util._extend(defaultOpts, opts || {});
+  var lessDependencies = {};
+  var lessDependenciesInverted = {};
 
   function fileActionLog(action, filePath) {
     if (!opts.verbose) return;
@@ -79,7 +66,7 @@ module.exports = function(opts, done) {
     }
   };
 
-  function transform(file, enc, cb) {
+  function transformFn(file, enc, cb) {
     var filePath = path.resolve(process.cwd(), file.path);
 
     this.push(file);
@@ -93,5 +80,26 @@ module.exports = function(opts, done) {
     cb();
   };
 
-  return function() { return through.obj(transform); }
-}
+  // public 
+  this.preAnalyze = function(files, done) {
+    if(Object.keys(lessDependencies).length > 0) {
+      if (typeof done === 'function') done();
+      return;
+    }
+
+    glob(files, function(err, matches) {
+      matches.forEach(function(filePath) { 
+        updateDependencies({path: filePath}) 
+      });
+      if (typeof done === 'function') done();
+    });
+
+    return this;
+  }
+
+  this.transform = function() {
+    return through.obj(transformFn);
+  }
+};
+
+module.exports = FoxyLess;
