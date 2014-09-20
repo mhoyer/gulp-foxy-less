@@ -17,8 +17,6 @@ describe('Running gulp-foxy-less task with disabled read-on-init', function(){
     });
   });
 
-  afterEach(function() {  });
-
   describe('with simple standalone .less file', function() {
     var fileFixture = specHelper.createFixture('standalone.less');
 
