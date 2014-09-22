@@ -136,7 +136,12 @@ var foxyLess = require('gulp-foxy-less');
 var foxy = foxyLess().preAnalyze(lessFiles);
 foxy(); // <<< see?
 ```
+## Changelog
 
+#### 0.1.1
+
+* fixes module.export to return a factory function (instead of constructor)
+* marks `.transport()` function obsolete as new factory will return a function
 
 ## Todo
 
