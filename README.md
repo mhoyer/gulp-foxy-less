@@ -44,7 +44,7 @@ gulp.task('less', function() {
 gulp.task('watch-less', function() {
   watch(lessFiles, function(files) {
     files
-      .pipe(foxy.transform())
+      .pipe(foxy())
       .pipe(less())
       .pipe(gulp.dest('app/'));
   });
@@ -68,7 +68,7 @@ gulp.task('watch-less', function() {
 
   watch(lessFiles, function(files) {
     files
-      .pipe(foxy.transform())
+      .pipe(foxy())
       .pipe(less())
       .pipe(gulp.dest('app/'));
   });
@@ -78,6 +78,11 @@ gulp.task('watch-less', function() {
 ## API
 
 ### foxyLess(opts)
+
+Returns a factory function that generates a new
+[`through2`](https://github.com/rvagg/through2) object stream to 
+be passed into a `.pipe()`.
+
 
 #### opts
 ##### opts.verbose
@@ -113,10 +118,24 @@ Default: `null`
 Callback that will be invoked when all glob matched files were analyzed.
 
 
-#### .transform()
+#### ~~.transform()~~
+*obsolete*
 
 Generates a new [`through2`](https://github.com/rvagg/through2) object stream to be passed into a `.pipe()`.
 
+You might invoke the returned function of the `foxyLess` factory directy:
+
+```
+var foxyLess = require('gulp-foxy-less');
+var foxy = foxyLess().preAnalyze(lessFiles);
+foxy.transform(); // returns the through2 object stream
+```
+Is now similar to:
+```
+var foxyLess = require('gulp-foxy-less');
+var foxy = foxyLess().preAnalyze(lessFiles);
+foxy(); // <<< see?
+```
 
 
 ## Todo
