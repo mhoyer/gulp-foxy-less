@@ -8,7 +8,7 @@ var path = require('path');
 var vinyl = require('vinyl');
 var util = require('util');
 
-function FoxyLess(opts) {
+module.exports = function(opts) {
   var defaultOpts = { verbose: false, readOnInit: null };
   var opts = util._extend(defaultOpts, opts || {});
   var lessDependencies = {};
@@ -64,7 +64,7 @@ function FoxyLess(opts) {
         pushDependentFilesToStream(depFile, stream, pushed);
       });
     }
-  };
+  }
 
   function transformFn(file, enc, cb) {
     var filePath = path.resolve(process.cwd(), file.path);
@@ -78,10 +78,10 @@ function FoxyLess(opts) {
     }
 
     cb();
-  };
+  }
 
   // public 
-  this.preAnalyze = function(files, done) {
+  function preAnalyze(files, done) {
     if(Object.keys(lessDependencies).length > 0) {
       if (typeof done === 'function') done();
       return;
@@ -97,9 +97,10 @@ function FoxyLess(opts) {
     return this;
   }
 
-  this.transform = function() {
-    return through.obj(transformFn);
-  }
+  return {
+    preAnalyze: preAnalyze,
+    transform: function() {
+      return through.obj(transformFn);
+    }
+  };
 };
-
-module.exports = FoxyLess;

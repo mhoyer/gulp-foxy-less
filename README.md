@@ -29,9 +29,9 @@ task exists besides a *watch-less* task.
 var gulp = require('gulp');
 var watch = require('gulp-watch');
 var less = require('gulp-less');
-var FoxyLess = require('gulp-foxy-less');
+var foxyLess = require('gulp-foxy-less');
 
-var foxy = new FoxyLess();
+var foxy = foxyLess();
 var lessFiles = ['app/**/*.less'];
 
 gulp.task('less', function() {
@@ -60,11 +60,11 @@ independent standalone *watch-less* task.
 var gulp = require('gulp');
 var watch = require('gulp-watch');
 var less = require('gulp-less');
-var FoxyLess = require('gulp-foxy-less');
+var foxyLess = require('gulp-foxy-less');
 
 gulp.task('watch-less', function() {
   var lessFiles = ['app/**/*.less'];
-  var foxy = new FoxyLess({verbose: true}).preAnalyze(lessFiles);
+  var foxy = foxyLess({verbose: true}).preAnalyze(lessFiles);
 
   watch(lessFiles, function(files) {
     files
@@ -77,7 +77,7 @@ gulp.task('watch-less', function() {
 
 ## API
 
-### new FoxyLess(opts)
+### foxyLess(opts)
 
 #### opts
 ##### opts.verbose

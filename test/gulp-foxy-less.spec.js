@@ -10,8 +10,8 @@ describe('Running gulp-foxy-less task with disabled read-on-init', function(){
     buffer = [];
 
     delete require.cache[require.resolve('..')];
-    var FoxyLess = require('..');
-    sut = new FoxyLess({verbose: false}).transform();
+    var foxyLess = require('..');
+    sut = foxyLess({verbose: false}).transform();
     sut.on('data', function(data){
       buffer.push(data);
     });
@@ -239,8 +239,8 @@ describe('Running gulp-foxy-less task with enabled read-on-init', function(){
     buffer = [];
 
     delete require.cache[require.resolve('..')];
-    var FoxyLess = require('..');
-    sut = new FoxyLess({verbose: false})
+    var foxyLess = require('..');
+    sut = foxyLess({verbose: false})
                 .preAnalyze(__dirname+'/fixtures/*.less', done)
                 .transform();
     sut.on('data', function(data){ 
@@ -368,8 +368,8 @@ describe('Creating gulp-foxy-less pipe with read-on-init given an array of globs
     buffer = [];
 
     delete require.cache[require.resolve('..')];
-    var FoxyLess = require('..');
-    sut = new FoxyLess()
+    var foxyLess = require('..');
+    sut = foxyLess()
             .preAnalyze([__dirname+'/fixtures/*.less'], done)
             .transform();
     sut.on('data', function(data){ 
