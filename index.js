@@ -97,10 +97,12 @@ module.exports = function(opts) {
     return this;
   }
 
-  return {
-    preAnalyze: preAnalyze,
-    transform: function() {
-      return through.obj(transformFn);
-    }
+  var foxyLess = function() {
+    return through.obj(transformFn);
   };
+
+  foxyLess.preAnalyze = preAnalyze;
+  foxyLess.transform = foxyLess;
+
+  return foxyLess;
 };
