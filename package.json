@@ -25,17 +25,17 @@
   },
   "homepage": "https://github.com/mhoyer/gulp-foxy-less",
   "devDependencies": {
-    "chai": "^1.9.1",
-    "gulp": "^3.8.7",
-    "gulp-mocha": "^1.0.0",
+    "chai": "^3.4.1",
+    "gulp": "^3.9.0",
+    "gulp-mocha": "^2.2.0",
     "jshint": "^2.5.5",
-    "mocha": "^1.21.4",
+    "mocha": "^2.3.4",
     "sinon": "^1.10.3"
   },
   "dependencies": {
-    "glob-all": "~2.4.1",
+    "glob-all": "^3.0.1",
     "gulp-util": "^3.0.1",
-    "through2": "^0.6.1",
-    "vinyl": "^0.4.3"
+    "through2": "^2.0.0",
+    "vinyl": "^1.1.0"
   }
 }
