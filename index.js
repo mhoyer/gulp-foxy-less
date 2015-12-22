@@ -48,22 +48,22 @@ module.exports = function(opts) {
     var filePath = path.resolve(process.cwd(), file.path);
     pushed = pushed || [filePath];
 
-    if(filePath in lessDependenciesInverted) {
-      lessDependenciesInverted[filePath].forEach(function(depFilePath) {
-        if(pushed.indexOf(depFilePath) >= 0) return;
+    if(!(filePath in lessDependenciesInverted)) return;
+    
+    lessDependenciesInverted[filePath].forEach(function(depFilePath) {
+      if(pushed.indexOf(depFilePath) >= 0) return;
 
-        fileActionLog('Pushing dependent file to stream', depFilePath);
+      fileActionLog('Pushing dependent file to stream', depFilePath);
 
-        var depFile = file.clone();
-        depFile.path = depFilePath;
-        depFile.contents = file.isStream() ? fs.createReadStream(depFilePath) : fs.readFileSync(depFilePath);
+      var depFile = file.clone();
+      depFile.path = depFilePath;
+      depFile.contents = file.isStream() ? fs.createReadStream(depFilePath) : fs.readFileSync(depFilePath);
 
-        pushed.push(depFilePath);
-        stream.push(depFile);
+      pushed.push(depFilePath);
+      stream.push(depFile);
 
-        pushDependentFilesToStream(depFile, stream, pushed);
-      });
-    }
+      pushDependentFilesToStream(depFile, stream, pushed);
+    });
   }
 
   function transformFn(file, enc, cb) {
